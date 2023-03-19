@@ -67,7 +67,7 @@ export class FormGroupDirective extends ControlContainer implements Form, OnChan
    * Reference to an old form group input value, which is needed to cleanup old instance in case it
    * was replaced with a new one.
    */
-  private _oldForm: FormGroup|undefined;
+  private _oldForm: FormGroup|null|undefined;
 
   /**
    * Callback that should be invoked when controls in FormGroup or FormArray collection change
@@ -85,7 +85,7 @@ export class FormGroupDirective extends ControlContainer implements Form, OnChan
    * @description
    * Tracks the `FormGroup` bound to this directive.
    */
-  @Input('formGroup') form: FormGroup = null!;
+  @Input('formGroup') form: FormGroup|null = null;
 
   /**
    * @description
@@ -144,7 +144,7 @@ export class FormGroupDirective extends ControlContainer implements Form, OnChan
    * @description
    * Returns the `FormGroup` bound to this directive.
    */
-  override get control(): FormGroup {
+  override get control(): FormGroup|null {
     return this.form;
   }
 
@@ -353,10 +353,12 @@ export class FormGroupDirective extends ControlContainer implements Form, OnChan
     }
   }
 
-  private _updateValidators() {
-    setUpValidators(this.form, this);
-    if (this._oldForm) {
-      cleanUpValidators(this._oldForm, this);
+  private _updateValidators(): void {
+    if (this.form !== null) {
+      setUpValidators(this.form, this);
+      if (this._oldForm) {
+        cleanUpValidators(this._oldForm, this);
+      }
     }
   }
 

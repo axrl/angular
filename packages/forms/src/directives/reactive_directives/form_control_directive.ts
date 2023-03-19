@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {Directive, EventEmitter, forwardRef, Inject, InjectionToken, Input, OnChanges, OnDestroy, Optional, Output, Provider, Self, SimpleChanges} from '@angular/core';
+import {Directive, EventEmitter, forwardRef, Inject, InjectionToken, Input, OnChanges, OnDestroy, Optional, Output, Provider, Self, SimpleChange, SimpleChanges} from '@angular/core';
 
 import {FormControl} from '../../model/form_control';
 import {NG_ASYNC_VALIDATORS, NG_VALIDATORS} from '../../validators';
@@ -62,8 +62,7 @@ export class FormControlDirective extends NgControl implements OnChanges, OnDest
    * @description
    * Tracks the `FormControl` instance bound to the directive.
    */
-  // TODO(issue/24571): remove '!'.
-  @Input('formControl') form!: FormControl;
+  @Input('formControl') form: FormControl|null = null;
 
   /**
    * @description
@@ -124,14 +123,18 @@ export class FormControlDirective extends NgControl implements OnChanges, OnDest
       if (previousForm) {
         cleanUpControl(previousForm, this, /* validateControlPresenceOnChange */ false);
       }
-      setUpControl(this.form, this, this.callSetDisabledState);
-      this.form.updateValueAndValidity({emitEvent: false});
+      if (this.form !== null) {
+        setUpControl(this.form, this, this.callSetDisabledState);
+        this.form.updateValueAndValidity({emitEvent: false});
+      }
     }
     if (isPropertyUpdated(changes, this.viewModel)) {
       if (typeof ngDevMode === 'undefined' || ngDevMode) {
         _ngModelWarning('formControl', FormControlDirective, this, this._ngModelWarningConfig);
       }
-      this.form.setValue(this.model);
+      if (this.form !== null) {
+        this.form.setValue(this.model);
+      };
       this.viewModel = this.model;
     }
   }
@@ -156,7 +159,7 @@ export class FormControlDirective extends NgControl implements OnChanges, OnDest
    * @description
    * The `FormControl` bound to this directive.
    */
-  override get control(): FormControl {
+  override get control(): FormControl|null {
     return this.form;
   }
 
@@ -171,7 +174,8 @@ export class FormControlDirective extends NgControl implements OnChanges, OnDest
     this.update.emit(newValue);
   }
 
-  private _isControlChanged(changes: {[key: string]: any}): boolean {
+  private _isControlChanged(changes: SimpleChanges):
+      changes is Record<string|'form', SimpleChange> {
     return changes.hasOwnProperty('form');
   }
 }
