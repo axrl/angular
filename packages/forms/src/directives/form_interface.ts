@@ -45,7 +45,7 @@ export interface Form {
    *
    * @param dir: The control directive.
    */
-  getControl(dir: NgControl): FormControl;
+  getControl(dir: NgControl): FormControl|null;
 
   /**
    * @description
@@ -69,7 +69,7 @@ export interface Form {
    *
    * @param dir: The form group directive from which to get the `FormGroup`.
    */
-  getFormGroup(dir: AbstractFormGroupDirective): FormGroup;
+  getFormGroup(dir: AbstractFormGroupDirective): FormGroup|null;
 
   /**
    * @description

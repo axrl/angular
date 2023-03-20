@@ -175,7 +175,7 @@ export class FormControlName extends NgControl implements OnChanges, OnDestroy {
    * Each index is the string name of the control on that level.
    */
   override get path(): string[] {
-    return controlPath(this.name == null ? this.name : this.name.toString(), this._parent!);
+    return controlPath(this.name == null ? this.name : this.name.toString(), this._parent);
   }
 
   /**

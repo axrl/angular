@@ -31,8 +31,10 @@ import {AsyncValidatorFn, Validator, ValidatorFn} from './validators';
  *
  * @see `FormsModule.withConfig`
  */
-export const CALL_SET_DISABLED_STATE = new InjectionToken(
-    'CallSetDisabledState', {providedIn: 'root', factory: () => setDisabledStateDefault});
+export const CALL_SET_DISABLED_STATE = new InjectionToken('CallSetDisabledState', {
+  providedIn: 'root',
+  factory: () => setDisabledStateDefault,
+});
 
 /**
  * The type for CALL_SET_DISABLED_STATE. If `always`, then ControlValueAccessor will always call
@@ -49,8 +51,12 @@ export type SetDisabledStateOption = 'whenDisabledForLegacyCode'|'always';
  */
 export const setDisabledStateDefault: SetDisabledStateOption = 'always';
 
-export function controlPath(name: string|null, parent: ControlContainer): string[] {
-  return [...parent.path!, name!];
+export function controlPath(name: string|null, parent: ControlContainer|null): string[] {
+  if (name && parent && parent.path) {
+    return [...parent.path, name];
+  } else {
+    return name ? [name] : [];
+  }
 }
 
 /**

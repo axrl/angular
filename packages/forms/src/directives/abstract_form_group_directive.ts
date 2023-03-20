@@ -30,14 +30,15 @@ export class AbstractFormGroupDirective extends ControlContainer implements OnIn
    *
    * @internal
    */
-  // TODO(issue/24571): remove '!'.
-  _parent!: ControlContainer;
+  _parent: ControlContainer|null = null;
 
   /** @nodoc */
   ngOnInit(): void {
     this._checkParentType();
-    // Register the group with its parent group.
-    this.formDirective!.addFormGroup(this);
+    if (this.formDirective) {
+      // Register the group with its parent group.
+      this.formDirective.addFormGroup(this);
+    }
   }
 
   /** @nodoc */
@@ -52,7 +53,7 @@ export class AbstractFormGroupDirective extends ControlContainer implements OnIn
    * @description
    * The `FormGroup` bound to this directive.
    */
-  override get control(): FormGroup {
+  override get control(): FormGroup|null {
     return this.formDirective!.getFormGroup(this);
   }
 

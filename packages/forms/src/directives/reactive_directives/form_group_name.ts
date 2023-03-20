@@ -165,7 +165,9 @@ export class FormArrayName extends ControlContainer implements OnInit, OnDestroy
    */
   ngOnInit(): void {
     this._checkParentType();
-    this.formDirective!.addFormArray(this);
+    if (this.formDirective) {
+      this.formDirective.addFormArray(this);
+    }
   }
 
   /**
@@ -182,8 +184,8 @@ export class FormArrayName extends ControlContainer implements OnInit, OnDestroy
    * @description
    * The `FormArray` bound to this directive.
    */
-  override get control(): FormArray {
-    return this.formDirective!.getFormArray(this);
+  override get control(): FormArray|null {
+    return this.formDirective ? this.formDirective.getFormArray(this) : null;
   }
 
   /**
@@ -210,7 +212,7 @@ export class FormArrayName extends ControlContainer implements OnInit, OnDestroy
   }
 }
 
-function _hasInvalidParent(parent: ControlContainer): boolean {
+function _hasInvalidParent(parent: ControlContainer|null): boolean {
   return !(parent instanceof FormGroupName) && !(parent instanceof FormGroupDirective) &&
       !(parent instanceof FormArrayName);
 }
